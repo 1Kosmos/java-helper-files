@@ -110,3 +110,35 @@ assertionResultRequest.put("type", "<type>");
 
 BIDAssertionResultResponse assertionResultResponse = BIDWebAuthn.submitAssertionResult(tenantInfo, assertionResultRequest);
 ```
+- Create new Driver's License verification session
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDCreateDocumentSessionResponse createdSessionResponse = BIDVerifyDocument.createDocumentSession(tenantInfo, "<dvcId>", "<documentType>");
+    
+```
+
+- Trigger SMS 
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDSendSMSResponse smsResponse = BIDMessaging.sendSMS(tenantInfo, "<smsTo>", "<smsISDCode>", "<smsTemplateB64>");
+```
+
+- Poll for Driver's License session response
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+BIDPollSessionResponse pollSessionResponse = BIDVerifyDocument.pollSessionResult(tenantInfo, "<dvcId>", "<sessionId>");
+```
+
+- Request Email verification link
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDRequestEmailVerificationLinkResponse requestEmailVerificationResponse = BIDAccessCodes.requestEmailVerificationLink(tenantInfo, "<emailTo>", "<emailTemplateB64OrNull>", "<emailSubjectOrNull>", "<ttl_seconds_or_null>");
+
+- Verify and Redeem Email verification link
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDAccessCodeResponse redeemVerificationCodeResponse = BIDAccessCodes.verifyAndRedeemEmailVerificationCode(tenantInfo, "<code>");
