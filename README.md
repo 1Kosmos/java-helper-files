@@ -58,12 +58,28 @@ BIDSessionResponse response = BIDSessions.pollSession(tenantInfo, "<sessionId>",
 ```
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
-BIDAssertionOptionValue attestationOptionRequest = new BIDAssertionOptionValue();
-attestationOptionRequest.put("dns", "<dns>");
-attestationOptionRequest.put("username", "<username>");
-attestationOptionRequest.put("displayName", "<displayName>");
-attestationOptionRequest.put("attestation", "<attestation>");
-attestationOptionRequest.put("authenticatorSelection", "<authenticatorSelection>");
+BIDAttestationOptionsValue attestationOptionRequest = new BIDAttestationOptionsValue();
+attestationOptionRequest.dns = "<dns>";
+attestationOptionRequest.username = "<username>";
+attestationOptionRequest.displayName = "<displayName>";
+
+BIDAuthenticatorSelectionValue authenticatorSelection = new BIDAuthenticatorSelectionValue();
+//If your device is a security key, such as a YubiKey:
+	authenticatorSelection.requireResidentKey = true;
+
+    attestationOptionRequest.attestation = "direct";
+    attestationOptionRequest.authenticatorSelection = authenticatorSelection;
+        
+//If your device is a platform authenticator, such as TouchID:
+	authenticatorSelection.authenticatorAttachment = "platform";
+		
+    attestationOptionRequest.attestation = "direct";
+    attestationOptionRequest.authenticatorSelection = authenticatorSelection;
+
+
+//If your device is a MacBook: 
+				
+    attestationOptionRequest.attestation = "none";
 
 BIDAttestationOptionsResponse attestationOptionsResponse = BIDWebAuthn.fetchAttestationOptions(tenantInfo, attestationOptionRequest);
 ```
@@ -73,13 +89,13 @@ BIDAttestationOptionsResponse attestationOptionsResponse = BIDWebAuthn.fetchAtte
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
 BIDAttestationResultValue attestationResultRequest = new BIDAttestationResultValue();
-attestationResultRequest.put("rawId", "<rawId>");
-attestationResultRequest.put("response", "<response>");
-attestationResultRequest.put("authenticatorAttachment", "<authenticatorAttachment>");
-attestationResultRequest.put("getClientExtensionResults", "<getClientExtensionResults>");
-attestationResultRequest.put("id", "<id>");
-attestationResultRequest.put("type", "<type>");
-attestationResultRequest.put("dns", "<dns>");
+attestationResultRequest.rawId = "<rawId>";
+attestationResultRequest.response = "<response>";
+attestationResultRequest.authenticatorAttachment = "<authenticatorAttachment>";
+attestationResultRequest.getClientExtensionResults = "<getClientExtensionResults>";
+attestationResultRequest.id = "<id>";
+attestationResultRequest.type = "<type>";
+attestationResultRequest.dns = "<dns>";
 
 BIDAttestationResultData attestationResultResponse = BIDWebAuthn.submitAttestationResult(tenantInfo, attestationResultRequest);
 ```
@@ -89,9 +105,9 @@ BIDAttestationResultData attestationResultResponse = BIDWebAuthn.submitAttestati
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
 BIDAssertionOptionValue assertionOptionRequest = new BIDAssertionOptionValue();
-assertionOptionRequest.put("username", "<username>");
-assertionOptionRequest.put("username", "<displayName>");
-assertionOptionRequest.put("dns", "<dns>");
+assertionOptionRequest.username = "<username>";
+assertionOptionRequest.username = "<displayName>";
+assertionOptionRequest.dns = "<dns>";
 
 BIDAssertionOptionResponse assertionOptionResponse = BIDWebAuthn.fetchAssertionOptions(tenantInfo, assertionOptionRequest);
 ```
@@ -101,12 +117,12 @@ BIDAssertionOptionResponse assertionOptionResponse = BIDWebAuthn.fetchAssertionO
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
 BIDAssertionResultValue assertionResultRequest = new BIDAssertionResultValue();
-assertionResultRequest.put("rawId", "<rawId>");
-assertionResultRequest.put("dns", "<dns>");
-assertionResultRequest.put("response", "<response>");
-assertionResultRequest.put("getClientExtensionResults", "<getClientExtensionResults>");
-assertionResultRequest.put("id", "<id>");
-assertionResultRequest.put("type", "<type>");
+assertionResultRequest.rawId = "<rawId>";
+assertionResultRequest.dns = "<dns>";
+assertionResultRequest.response = "<response>";
+assertionResultRequest.getClientExtensionResults = "<getClientExtensionResults>";
+assertionResultRequest.id = "<id>";
+assertionResultRequest.type = "<type>";
 
 BIDAssertionResultResponse assertionResultResponse = BIDWebAuthn.submitAssertionResult(tenantInfo, assertionResultRequest);
 ```
