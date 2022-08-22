@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BIDOTP {
-    public static BIDOtpResponse requestOTP(String userId, String emailOrNull, String phoneOrNull, String isdCodeOrNull) {
+    public static BIDOtpResponse requestOTP(BIDTenantInfo tenantInfo, String userId, String emailOrNull, String phoneOrNull, String isdCodeOrNull) {
         BIDOtpResponse ret = null;
         try {
-            BIDCommunityInfo communityInfo = BIDSDK.getInstance().getCommunityInfo();
-            BIDKeyPair keySet = BIDSDK.getInstance().getKeySet();
-            String licenseKey = BIDSDK.getInstance().getLicenseKey();
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
+            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
+            String licenseKey = tenantInfo.licenseKey;
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
             Map<String, Object> body = new HashMap<>();
             body.put("userId", userId);
@@ -73,13 +73,13 @@ public class BIDOTP {
         return ret;
     }
 
-    public static BIDOtpVerifyResult verifyOTP(String userId, String otpCode) {
+    public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode) {
         BIDOtpVerifyResult ret = null;
         try {
-            BIDCommunityInfo communityInfo = BIDSDK.getInstance().getCommunityInfo();
-            BIDKeyPair keySet = BIDSDK.getInstance().getKeySet();
-            String licenseKey = BIDSDK.getInstance().getLicenseKey();
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
+            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
+            String licenseKey = tenantInfo.licenseKey;
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
             Map<String, Object> body = new HashMap<>();
             body.put("userId", userId);

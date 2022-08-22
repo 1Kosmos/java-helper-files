@@ -9,9 +9,15 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDAttestationOptionsValue {
+    
+	public String dns;
+    public String username;
+    public String displayName;
+    public String attestation;
+    public BIDAuthenticatorSelectionValue authenticatorSelection;
+	public String communityId;
+	public String tenantId;
     
     @Override
     public String toString() {

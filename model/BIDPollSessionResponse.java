@@ -7,12 +7,19 @@
  */
 package com.bidsdk.model;
 
+import java.util.Map;
+
 import com.google.gson.Gson;
 
-public class BIDSession {
+public class BIDPollSessionResponse {
+    public String responseStatus;
     public String sessionId;
-    public String url;
-    
+    public Object metadata;
+    public Object dl_object;
+    public Object liveid_object;
+    public Map<String, Object> certifications;
+    public String data;
+    public String publicKey;
     @Override
     public String toString() {
         return new Gson().toJson(this);

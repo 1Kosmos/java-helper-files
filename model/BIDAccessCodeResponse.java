@@ -9,12 +9,26 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
-    
+public class BIDAccessCodeResponse {
+	public Integer ttl_seconds;
+	public String type;
+	public Boolean phoneRequired;
+	public String uuid;
+	public Integer ttl;
+	public Integer createdTime;
+	public String tenantId;
+	public String communityId;
+	public String id;
+    public String data;
+    public String publickey;
+    public String status;
+    public Integer statusCode;
+	public String message;
+    public BIDAccesscodepayloadData accesscodepayload;
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
     }
 }
+

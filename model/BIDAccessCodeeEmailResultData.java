@@ -7,14 +7,14 @@
  */
 package com.bidsdk.model;
 
-import com.google.gson.Gson;
-
-public class BIDSession {
-    public String sessionId;
-    public String url;
-    
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
-    }
+public class BIDAccessCodeeEmailResultData {
+	public Boolean status;
+	public String statusCode;
+    public String message;
+    public String error;
+    public String gatewatId;
+    public String gatewayName;
+    public String resultId;
+    public String messageId;
+    public String ts;
 }

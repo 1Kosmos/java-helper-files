@@ -8,21 +8,22 @@
 package com.bidsdk.model;
 
 import java.util.Map;
+import java.util.List;
 
 import com.google.gson.Gson;
 
-public class BIDSessionResponse {
-    public String sessionId;
+public class BIDAttestationOptionsResponse {
+    public BIDRelyingPartyValue rp;
+    public BIDAttestationUserData user;
+    public String attestation;
+    public List<BIDPubKeyCredParam> pubKeyCredParams;
+    public int timeout;
+    public BIDAuthenticatorSelectionValue authenticatorSelection;
+    public String challenge;
+    public Map<String, Object> excludeCredentials;
+    public String status;
+    public String errorMessage;
     public String data;
-    public String appid;
-    public String ial;
-    public String publicKey;
-    public long createdTS;
-    public String createdDate;
-    public int status;
-    public String message;
-    public Map<String, Object> user_data;
-    public BIDPoNData account_data;
     
     @Override
     public String toString() {

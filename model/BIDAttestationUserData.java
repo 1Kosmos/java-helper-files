@@ -9,9 +9,10 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDAttestationUserData {
+    public String id;
+    public String name;
+    public String displayName;
     
     @Override
     public String toString() {

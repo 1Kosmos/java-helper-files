@@ -7,14 +7,9 @@
  */
 package com.bidsdk.model;
 
-import com.google.gson.Gson;
-
-public class BIDSession {
-    public String sessionId;
-    public String url;
-    
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
-    }
+public class BIDAccesscodepayloadData {
+	public String otp_email;
+	public String authType;
+	public String userid;
+	public String invite_email;
 }

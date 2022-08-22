@@ -9,9 +9,9 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDAuthenticatorSelectionValue {
+    public String authenticatorAttachment;
+    public Boolean requireResidentKey;
     
     @Override
     public String toString() {

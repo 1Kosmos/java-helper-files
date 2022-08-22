@@ -9,9 +9,9 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDPubKeyCredParam {
+    public String type;
+    public int alg;
     
     @Override
     public String toString() {

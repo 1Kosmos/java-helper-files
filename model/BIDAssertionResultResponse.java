@@ -9,10 +9,13 @@ package com.bidsdk.model;
 
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDAssertionResultResponse {
     
+    public String sub;
+    public String status;
+    public String errorMessage;
+    public String data;
+
     @Override
     public String toString() {
         return new Gson().toJson(this);

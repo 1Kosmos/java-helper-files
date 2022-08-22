@@ -11,19 +11,20 @@ import com.bidsdk.model.BIDCommunityInfo;
 import com.bidsdk.model.BIDKeyPair;
 import com.bidsdk.model.BIDPoNData;
 import com.bidsdk.model.BIDSD;
+import com.bidsdk.model.BIDTenantInfo;
 import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
 
 import java.util.Map;
 
 public class BIDUsers {
-    public static BIDPoNData fetchUserByDID(String did, boolean fetchDevices) {
+    public static BIDPoNData fetchUserByDID(BIDTenantInfo tenantInfo, String did, boolean fetchDevices) {
         BIDPoNData ret = null;
         try {
-            BIDCommunityInfo communityInfo = BIDSDK.getInstance().getCommunityInfo();
-            BIDKeyPair keySet = BIDSDK.getInstance().getKeySet();
-            String licenseKey = BIDSDK.getInstance().getLicenseKey();
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
+            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
+            String licenseKey = tenantInfo.licenseKey;
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 

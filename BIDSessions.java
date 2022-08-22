@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BIDSessions {
-    private static String getPublicKey() {
+    private static String getPublicKey(BIDTenantInfo tenantInfo) {
         String ret = null;
         try {
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
             String url = sd.sessions + "/publickeys";
 
             String cache_key = url;
@@ -51,15 +51,15 @@ public class BIDSessions {
         return ret;
     }
 
-    public static BIDSession createNewSession(String authType, String scopes) {
+    public static BIDSession createNewSession(BIDTenantInfo tenantInfo, String authType, String scopes) {
         BIDSession ret = null;
         try {
-            BIDCommunityInfo communityInfo = BIDSDK.getInstance().getCommunityInfo();
-            BIDKeyPair keySet = BIDSDK.getInstance().getKeySet();
-            String licenseKey = BIDSDK.getInstance().getLicenseKey();
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
+            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
+            String licenseKey = tenantInfo.licenseKey;
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-            String sessionsPublicKey = getPublicKey();
+            String sessionsPublicKey = getPublicKey(tenantInfo);
 
 
             Map<String, Object> origin = new HashMap<>();
@@ -99,15 +99,16 @@ public class BIDSessions {
         return ret;
     }
 
-    public static BIDSessionResponse pollSession(String sessionId, boolean fetchProfile, boolean fetchDevices) {
+    public static BIDSessionResponse pollSession(BIDTenantInfo tenantInfo, String sessionId, boolean fetchProfile, boolean fetchDevices) {
         BIDSessionResponse ret = null;
         try {
-            BIDCommunityInfo communityInfo = BIDSDK.getInstance().getCommunityInfo();
-            BIDKeyPair keySet = BIDSDK.getInstance().getKeySet();
-            String licenseKey = BIDSDK.getInstance().getLicenseKey();
-            BIDSD sd = BIDSDK.getInstance().getSD();
+            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
+            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
+            String licenseKey = tenantInfo.licenseKey;
+            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-            String sessionsPublicKey = getPublicKey();
+            String sessionsPublicKey = getPublicKey(tenantInfo);
+
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, sessionsPublicKey);
 
             Map<String, String> headers = WTM.defaultHeaders();
@@ -140,7 +141,7 @@ public class BIDSessions {
             }
 
             if (ret != null && ret.data != null && ret.user_data.containsKey("did") && fetchProfile) {
-                ret.account_data = BIDUsers.fetchUserByDID((String)ret.user_data.get("did"), fetchDevices);
+                ret.account_data = BIDUsers.fetchUserByDID(tenantInfo, (String)ret.user_data.get("did"), fetchDevices);
             }
         }
         catch (Exception e) {

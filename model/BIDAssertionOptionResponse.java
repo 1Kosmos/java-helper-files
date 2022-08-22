@@ -7,11 +7,19 @@
  */
 package com.bidsdk.model;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 
-public class BIDSession {
-    public String sessionId;
-    public String url;
+public class BIDAssertionOptionResponse {
+    public String challenge;
+    public String rpId;
+    public int timeout;
+    public String UserVerification;
+    public List<BIDAllowCredentials> allowCredentials;
+    public String status;
+    public String errorMessage;
+    public String data;
     
     @Override
     public String toString() {
