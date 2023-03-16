@@ -22,6 +22,7 @@ public class BIDSD {
     public String reports;
     public String webauthn;
     public String docuverify;
+    public String vcs;
 
     @Override
     public String toString() {
