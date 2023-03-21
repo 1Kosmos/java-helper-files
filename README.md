@@ -6,7 +6,7 @@
 
 _(*ability* to add as gradle dependency will be added soon)_
 
-- add to build.gradle
+- For gradle, Add Below dependencies to build.gradle
 ```
 ext {
 	web3jVersion = "4.5.4"
@@ -22,6 +22,44 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
 }
 
+```
+
+- For Maven, Add Below dependencies to pom.xml
+```
+<dependencies>
+	other dependency....
+
+	<dependency>
+		<groupId>org.bitcoinj</groupId>
+		<artifactId>bitcoinj-core</artifactId>
+		<version>0.15.10</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.web3j/core -->
+	<dependency>
+		<groupId>org.web3j</groupId>
+		<artifactId>core</artifactId>
+		<version>4.5.4</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+	<dependency>
+		<groupId>com.squareup.okhttp3</groupId>
+		<artifactId>okhttp</artifactId>
+		<version>4.3.1</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>4.5.13</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.8.6</version>
+	</dependency>
+</dependencies>
 ```
 
 - Know your tenant (BIDTenant) `dns` and `communityName`
