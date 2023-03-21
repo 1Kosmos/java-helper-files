@@ -160,3 +160,65 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 
 BIDAccessCodeResponse redeemVerificationCodeResponse = BIDAccessCodes.verifyAndRedeemEmailVerificationCode(tenantInfo, "<code>");
 ```
+
+- Request verifiable credentials for ID
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vc_from_document__type_
+BIDDocumentVCResponse issuedVerifiableCredentialForId = BIDVerifiableCredential.requestVCForID(tenantInfo, "<type>", "<document>", "<userDid>", "<userPublickey>", "<userUrn>");
+```
+
+- Request verifiable credentials for Payload
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vc_from_payload__type_
+BIDPayloadVCResponse issuedVerifiableCredentialForPayload = BIDVerifiableCredential.requestVCForPayload(tenantInfo, "<type>", "<issuer>", "<info>", "<userDid>", "<userPublickey>", "<userUrn>");
+```
+
+- Verify verifiable credentials
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vc_verify
+BIDVerifiedVCResponse verifiedVCResponse = BIDVerifiableCredential.verifyCredential(tenantInfo, "<issuedVerifiableCredential>");
+```
+
+- Request verifiable presentation
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vp_create
+BIDRequestVPResponse verifiedVCResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>);
+```
+
+- Verify verifiable presentation
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vp_verify
+BIDVerifiedVPResponse verifiedVP = BIDVerifiableCredential.verifyPresentation(tenantInfo, "<vp>");
+```
+
+- Get verifiable credentials status
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+// sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
+// example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/get_tenant__tenantId__community__communityId__vc__vcId__status
+BIDVCStatusResponse vcStatus = BIDVerifiableCredential.getVcStatusById(tenantInfo, "<vcId>");
+```
+
+- Request OAuth2 authorization code
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDAuthorizationCodeResponse authorizationCodeResponse = BIDOauth2.requestAuthorizationCode(tenantInfo, "<proofOfAuthenticationJwt>", "<clientId>", "<responseType>", "<scope>", "<redirectUri>", "<stateOrNull>", "<nonceOrNull>");
+```
+
+- Request OAuth2 Tokens
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+
+BIDTokenResponse requestTokenResponse = BIDOauth2.requestToken(tenantInfo, "<clientId>", "<clientSecret>", "<grantType>", "<redirectUri>", "<codeOrNull>", "<refreshTokenOrNull>");
+```
