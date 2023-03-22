@@ -145,7 +145,6 @@ public class BIDOauth2 {
 			List<NameValuePair> body = new ArrayList<NameValuePair>();
 			body.add(new BasicNameValuePair("grant_type", grantType));
 			body.add(new BasicNameValuePair("redirect_uri", redirectUri));
-			body.add(new BasicNameValuePair("communityId", communityInfo.community.id));
 
 			if (codeOrNull != null) {
 				body.add(new BasicNameValuePair("code", codeOrNull));
