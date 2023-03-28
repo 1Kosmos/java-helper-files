@@ -198,7 +198,7 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 // sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
 // example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vp_create
 
-BIDRequestVPResponse verifiedVCResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>);
+BIDRequestVPResponse vpResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>);
 ```
 
 - Verify verifiable presentation
