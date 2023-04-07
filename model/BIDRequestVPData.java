@@ -16,7 +16,7 @@ public class BIDRequestVPData {
 	
 	public Map<String, Object> vc;
 	public List<String> attributes;
-	public String age;
+	public String ageToProve;
 	
 	@Override
 	public String toString() {

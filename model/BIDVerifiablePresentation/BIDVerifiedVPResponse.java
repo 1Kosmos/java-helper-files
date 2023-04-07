@@ -5,20 +5,23 @@
  * You may obtain a copy of this license at 
  *    https://github.com/1Kosmos/1Kosmos_License/blob/main/LICENSE.txt
  */
-package com.bidsdk.model;
+package com.bidsdk.model.BIDVerifiablePresentation;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
-public class BIDDocumentVCResponse {
-    public int code;
-    public String message;
-	public Map<String, Object> vc;
+public class BIDVerifiedVPResponse {
 
+	public Boolean verified;
+	public List<Map<String, Object>> vc_status;
+	public Boolean ageVerified;
+	public int code;
+	public String message;
+	
 	@Override
 	public String toString() {
 		return new Gson().toJson(this);
 	}
 }
-	

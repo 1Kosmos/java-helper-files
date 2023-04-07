@@ -8,21 +8,28 @@
 package com.bidsdk;
 
 import com.bidsdk.model.*;
+import com.bidsdk.model.BIDVerifiableCredentials.BIDDocumentResponse;
+import com.bidsdk.model.BIDVerifiableCredentials.BIDPayloadResponse;
+import com.bidsdk.model.BIDVerifiableCredentials.BIDVCStatusResponse;
+import com.bidsdk.model.BIDVerifiableCredentials.BIDVerifiedResponse;
+import com.bidsdk.model.BIDVerifiablePresentation.BIDIssuedVPResponse;
+import com.bidsdk.model.BIDVerifiablePresentation.BIDVerifiedVPResponse;
 import com.bidsdk.utils.InMemCache;
 import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BIDVerifiableCredential {
 
-	private static String getPublicKey(BIDTenantInfo tenantInfo) {
+	private static String getPublicKey(String baseUrl) {
 		String ret = null;
 		try {
-			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
-			String url = sd.vcs + "/publickeys";
+			String url = baseUrl + "/publickeys";
 
 			String cache_key = url;
 			String cache_str = InMemCache.getInstance().get(cache_key);
@@ -50,9 +57,9 @@ public class BIDVerifiableCredential {
 		return ret;
 	}
 
-	public static BIDDocumentVCResponse requestVCForID(BIDTenantInfo tenantInfo, String type, BIDDLObjectData document,
-			String userDid, String userPublickey, String userUrn) {
-		BIDDocumentVCResponse ret = null;
+	public static BIDDocumentResponse requestVCForID(BIDTenantInfo tenantInfo, String type,
+			Map<String, String> document, String userDid, String userPublickey, String userUrn) {
+		BIDDocumentResponse ret = null;
 		try {
 
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -60,7 +67,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -81,8 +88,10 @@ public class BIDVerifiableCredential {
 									+ communityInfo.community.id + "/vc/from/document/" + type,
 							headers, new Gson().toJson(body));
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
-			ret = new Gson().fromJson(responseStr, BIDDocumentVCResponse.class);
+			ret = new Gson().fromJson(responseStr, BIDDocumentResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,9 +99,10 @@ public class BIDVerifiableCredential {
 		return ret;
 	}
 
-	public static BIDPayloadVCResponse requestVCForPayload(BIDTenantInfo tenantInfo, String type, BIDIssuerData issuer,
-			BIDEmploymentInfoData info, String userDid, String userPublickey, String userUrn) {
-		BIDPayloadVCResponse ret = null;
+	public static BIDPayloadResponse requestVCForPayload(BIDTenantInfo tenantInfo, String type,
+			Map<String, Object> issuer, Map<String, Object> info, String userDid, String userPublickey,
+			String userUrn) {
+		BIDPayloadResponse ret = null;
 		try {
 
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -100,7 +110,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -122,8 +132,10 @@ public class BIDVerifiableCredential {
 									+ communityInfo.community.id + "/vc/from/payload/" + type,
 							headers, new Gson().toJson(body));
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
-			ret = new Gson().fromJson(responseStr, BIDPayloadVCResponse.class);
+			ret = new Gson().fromJson(responseStr, BIDPayloadResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,8 +143,8 @@ public class BIDVerifiableCredential {
 		return ret;
 	}
 
-	public static BIDVerifiedVCResponse verifyCredential(BIDTenantInfo tenantInfo, Map<String, Object> vc) {
-		BIDVerifiedVCResponse ret = null;
+	public static BIDVerifiedResponse verifyCredential(BIDTenantInfo tenantInfo, Map<String, Object> vc) {
+		BIDVerifiedResponse ret = null;
 		try {
 
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -140,7 +152,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -155,8 +167,10 @@ public class BIDVerifiableCredential {
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
 					+ "/community/" + communityInfo.community.id + "/vc/verify", headers, new Gson().toJson(body));
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
-			ret = new Gson().fromJson(responseStr, BIDVerifiedVCResponse.class);
+			ret = new Gson().fromJson(responseStr, BIDVerifiedResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,8 +178,9 @@ public class BIDVerifiableCredential {
 		return ret;
 	}
 
-	public static BIDRequestVPResponse requestVPForCredentials(BIDTenantInfo tenantInfo, List<BIDRequestVPData> vcs) {
-		BIDRequestVPResponse ret = null;
+	public static BIDIssuedVPResponse requestVPForCredentials(BIDTenantInfo tenantInfo, List<BIDRequestVPData> vcs,
+			Boolean createShareUrl) {
+		BIDIssuedVPResponse ret = null;
 		try {
 
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -173,7 +188,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -184,12 +199,15 @@ public class BIDVerifiableCredential {
 
 			Map<String, Object> body = new HashMap<>();
 			body.put("vcs", vcs);
+			body.put("createShareUrl", createShareUrl);
 
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
 					+ "/community/" + communityInfo.community.id + "/vp/create", headers, new Gson().toJson(body));
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
-			ret = new Gson().fromJson(responseStr, BIDRequestVPResponse.class);
+			ret = new Gson().fromJson(responseStr, BIDIssuedVPResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -206,7 +224,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -221,8 +239,10 @@ public class BIDVerifiableCredential {
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
 					+ "/community/" + communityInfo.community.id + "/vp/verify", headers, new Gson().toJson(body));
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
 			ret = new Gson().fromJson(responseStr, BIDVerifiedVPResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -239,7 +259,7 @@ public class BIDVerifiableCredential {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String vcsPublicKey = getPublicKey(tenantInfo);
+			String vcsPublicKey = getPublicKey(sd.vcs);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
 
@@ -251,8 +271,84 @@ public class BIDVerifiableCredential {
 			Map<String, Object> response = WTM.execute("get", sd.vcs + "/tenant/" + communityInfo.tenant.id
 					+ "/community/" + communityInfo.community.id + "/vc/" + vcId + "/status", headers, null);
 
+			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
 			ret = new Gson().fromJson(responseStr, BIDVCStatusResponse.class);
+			ret.code = statusCode;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	public static Map<String, Object> getVPWithDownloadUri(String licenseKey, BIDKeyPair keySet, String downloadUri,
+			Map<String, Object> requestID) {
+		Map ret = null;
+		try {
+			URI url = new URI(downloadUri);
+
+			String serviceUrl = "https://" + url.getHost() + "/vcs";
+			String vcsPublicKey = getPublicKey(serviceUrl);
+			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
+
+			Map<String, String> headers = WTM.defaultHeaders();
+			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
+			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(requestID), sharedKey));
+			headers.put("publickey", keySet.publicKey);
+
+			Map<String, Object> response = WTM.execute("get", downloadUri, headers, null);
+
+			int statusCode = (Integer) response.get("status");
+			String responseStr = (String) response.get("response");
+
+			ret = new Gson().fromJson(responseStr, Map.class);
+			if (ret.get("data") != null) {
+				String clientSharedKey = BIDECDSA.createSharedKey(keySet.privateKey, (String) ret.get("publicKey"));
+				String dec_data = BIDECDSA.decrypt((String) ret.get("data"), clientSharedKey);
+				ret = new Gson().fromJson(dec_data, Map.class);
+			}
+
+			ret.put("code", statusCode);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	public static BIDVerifiedVPResponse verifyVPWithDownloadUri(String licenseKey, BIDKeyPair keySet,
+			String downloadUri, Map<String, Object> vp, Map<String, Object> requestID) {
+		BIDVerifiedVPResponse ret = null;
+		try {
+			URI url = new URI(downloadUri);
+			String serviceUrl = "https://" + url.getHost() + "/vcs";
+			String vcsPublicKey = getPublicKey(serviceUrl);
+			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, vcsPublicKey);
+
+			Map<String, String> headers = WTM.defaultHeaders();
+			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
+			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(requestID), sharedKey));
+			headers.put("publickey", keySet.publicKey);
+
+			ArrayList<Object> verifiableCredential = (ArrayList<Object>) vp.get("verifiableCredential");
+
+			Map<String, Object> firstVC = (Map<String, Object>) verifiableCredential.get(0);
+
+			Map<String, Object> body = new HashMap<>();
+			body.put("vp", vp);
+
+			String tenantId = ((Map<String, String>) firstVC.get("issuer")).get("tenantId");
+			String communityId = ((Map<String, String>) firstVC.get("issuer")).get("communityId");
+
+			Map<String, Object> response = WTM.execute("post",
+					serviceUrl + "/tenant/" + tenantId + "/community/" + communityId + "/vp/verify", headers,
+					new Gson().toJson(body));
+
+			int statusCode = (Integer) response.get("status");
+			String responseStr = (String) response.get("response");
+
+			ret = new Gson().fromJson(responseStr, BIDVerifiedVPResponse.class);
+			ret.code = statusCode;
 
 		} catch (Exception e) {
 			e.printStackTrace();

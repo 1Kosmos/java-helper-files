@@ -5,14 +5,21 @@
  * You may obtain a copy of this license at 
  *    https://github.com/1Kosmos/1Kosmos_License/blob/main/LICENSE.txt
  */
-package com.bidsdk.model;
+package com.bidsdk.model.BIDVerifiableCredentials;
 
-public class BIDProofData {
+import java.util.Map;
+
+import com.google.gson.Gson;
+
+public class BIDVCStatusResponse  {
 	
-	public String type;
-	public String created;
-	public String verificationMethod;
-	public String proofPurpose;
-	public String proofValue;
+	public int code;
+	public String message;
+	public Map<String, Object> result;
 	
+	@Override
+	public String toString() {
+		return new Gson().toJson(this);
+	}
+
 }
