@@ -199,7 +199,10 @@ public class BIDVerifiableCredential {
 
 			Map<String, Object> body = new HashMap<>();
 			body.put("vcs", vcs);
-			body.put("createShareUrl", createShareUrl);
+
+			if(createShareUrl != null) {
+				body.put("createShareUrl", createShareUrl);				
+			}
 
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
 					+ "/community/" + communityInfo.community.id + "/vp/create", headers, new Gson().toJson(body));
