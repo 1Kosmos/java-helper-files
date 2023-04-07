@@ -21,4 +21,3 @@ public class BIDDocumentResponse {
 		return new Gson().toJson(this);
 	}
 }
-	

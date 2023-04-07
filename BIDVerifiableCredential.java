@@ -178,7 +178,7 @@ public class BIDVerifiableCredential {
 		return ret;
 	}
 
-	public static BIDIssuedVPResponse requestVPForCredentials(BIDTenantInfo tenantInfo, List<BIDRequestVPData> vcs,
+	public static BIDIssuedVPResponse requestVPForCredentials(BIDTenantInfo tenantInfo, List<Map<String, Object>> vcs,
 			Boolean createShareUrl) {
 		BIDIssuedVPResponse ret = null;
 		try {
