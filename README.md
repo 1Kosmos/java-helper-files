@@ -235,8 +235,7 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 
 // sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
 // example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vp_create
-
-BIDRequestVPResponse vpResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>);
+BIDRequestVPResponse vpResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>", "<createShareUrl>");
 ```
 
 - Verify verifiable presentation
@@ -255,6 +254,27 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 
 // sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
 // example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/get_tenant__tenantId__community__communityId__vc__vcId__status
-
 BIDVCStatusResponse vcStatus = BIDVerifiableCredential.getVcStatusById(tenantInfo, "<vcId>");
+```
+
+- Get VP with download URI
+```
+Map<String, Object> vpResponse = BIDVerifiableCredential.getVPWithDownloadUri("<license>", "<keySet>", "<downloadUri>", "<requestId>");
+```
+
+- Verify VP with download URI
+```
+BIDVerifiedVPResponse verifiedVP = BIDVerifiableCredential.verifyVPWithDownloadUri("<license>", "<keySet>", "<downloadUri>", "<vp>", "<requestId>");
+```
+
+- Request OAuth2 authorization code
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+BIDAuthorizationCodeResponse authorizationCodeResponse = BIDOauth2.requestAuthorizationCode(tenantInfo, "<proofOfAuthenticationJwt>", "<clientId>", "<responseType>", "<scope>", "<redirectUri>", "<stateOrNull>", "<nonceOrNull>");
+```
+
+- Request OAuth2 Tokens
+```
+BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
+BIDTokenResponse requestTokenResponse = BIDOauth2.requestToken(tenantInfo, "<clientId>", "<clientSecret>", "<grantType>", "<redirectUri>", "<codeOrNull>", "<refreshTokenOrNull>");
 ```
