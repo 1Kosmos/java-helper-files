@@ -23,6 +23,7 @@ public class BIDSD {
     public String webauthn;
     public String docuverify;
     public String vcs;
+    public String oauth2;
 
     @Override
     public String toString() {
