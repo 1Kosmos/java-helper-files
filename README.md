@@ -235,6 +235,7 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 
 // sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
 // example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/post_tenant__tenantId__community__communityId__vp_create
+
 BIDRequestVPResponse vpResponse = BIDVerifiableCredential.requestVPForCredentials(tenantInfo, "<vcs>", "<createShareUrl>");
 ```
 
@@ -254,6 +255,7 @@ BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<licen
 
 // sample vcs object (see {tenant-dns}/vcs/docs for up to date request structure)
 // example https://blockid-trial.1kosmos.net/vcs/docs/#/Credentials/get_tenant__tenantId__community__communityId__vc__vcId__status
+
 BIDVCStatusResponse vcStatus = BIDVerifiableCredential.getVcStatusById(tenantInfo, "<vcId>");
 ```
 
