@@ -49,7 +49,8 @@ public class WTM {
     public static Map<String, Object> execute(String type
                 , String url
                 , Map<String, String> headers
-                , String bodyStr)
+                , String bodyStr
+                , Boolean keepAlive)
     {
         Map<String, Object> ret = new HashMap<>();
         try {
@@ -81,6 +82,11 @@ public class WTM {
             for (Map.Entry<String,String> entry : headers.entrySet()) {
                 request.setHeader(entry.getKey(), entry.getValue());
             }
+            
+            if(keepAlive) {
+            	request.setHeader("Connection", "keep-alive");
+            }
+            
             //end - add headers
 
             if (bodyStr != null) {
