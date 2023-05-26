@@ -65,6 +65,7 @@ public class BIDOauth2 {
 			request.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.setHeader("charset", "utf-8");
 			request.setHeader("Accept", "application/json");
+			request.setHeader("Connection", "keep-alive");
 
 			List<NameValuePair> body = new ArrayList<NameValuePair>();
 			body.add(new BasicNameValuePair("client_id", clientId));
@@ -141,6 +142,7 @@ public class BIDOauth2 {
 			request.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.setHeader("charset", "utf-8");
 			request.setHeader("Authorization", "Basic " + authEncoded);
+			request.setHeader("Connection", "keep-alive");
 
 			List<NameValuePair> body = new ArrayList<NameValuePair>();
 			body.add(new BasicNameValuePair("grant_type", grantType));

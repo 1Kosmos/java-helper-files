@@ -28,12 +28,21 @@ import java.util.UUID;
 
 public class WTM {
 
+	public static Map<String, Object> makeRequestId(String uuid) {
+		Map<String, Object> ret = new HashMap<>();
+		ret.put("ts", Instant.now().getEpochSecond());
+		ret.put("uuid", uuid != null ? uuid : UUID.randomUUID().toString());
+		ret.put("appid", "java-helper");
+
+		return ret;
+
+	}
+
     public static Map<String, Object> makeRequestId() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("ts", Instant.now().getEpochSecond());
         ret.put("uuid", UUID.randomUUID().toString());
-        ret.put("appid", "fixme");
-
+		ret.put("appid", "java-helper");
 
         return ret;
 

@@ -48,10 +48,13 @@ public class BIDOTP {
             headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
             headers.put("publickey", keySet.publicKey);
 
+            Boolean keepAlive = false;
+            
             Map<String, Object> response = WTM.execute("post",
                                                     sd.adminconsole + "/api/r2/otp/generate",
                                                     headers,
-                                                    new Gson().toJson(body));
+                                                    new Gson().toJson(body),
+                                                    keepAlive);
 
             String responseStr = (String) response.get("response");
             int statusCode = (Integer) response.get("status");
@@ -95,10 +98,13 @@ public class BIDOTP {
             headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
             headers.put("publickey", keySet.publicKey);
 
+            Boolean keepAlive = false;
+            
             Map<String, Object> response = WTM.execute("post",
                     sd.adminconsole + "/api/r2/otp/verify",
                     headers,
-                    new Gson().toJson(body));
+                    new Gson().toJson(body),
+                    keepAlive);
 
             String responseStr = (String) response.get("response");
             int statusCode = (Integer) response.get("status");
