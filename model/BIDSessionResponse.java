@@ -23,6 +23,7 @@ public class BIDSessionResponse {
     public String message;
     public Map<String, Object> user_data;
     public BIDPoNData account_data;
+    public Map<String, Object> userInfo;
     
     @Override
     public String toString() {
