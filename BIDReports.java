@@ -51,9 +51,9 @@ public class BIDReports {
 		return ret;
 	}
 
-	public static Map<String, Object> logEvent(BIDTenantInfo tenantInfo, String eventName, Map<String, Object> data,
+	public static String logEvent(BIDTenantInfo tenantInfo, String eventName, Map<String, Object> data,
 			Map<String, Object> requestId) {
-		Map<String, Object> ret = null;
+		String ret = null;
 		try {
 
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -85,7 +85,7 @@ public class BIDReports {
 			String responseStr = (String) response.get("response");
 			int statusCode = (Integer) response.get("status");
 
-			ret = new Gson().fromJson(responseStr, Map.class);
+			ret = responseStr;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
