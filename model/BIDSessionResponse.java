@@ -12,22 +12,22 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 public class BIDSessionResponse {
-    public String sessionId;
-    public String data;
-    public String appid;
-    public String ial;
-    public String publicKey;
-    public long createdTS;
-    public String createdDate;
-    public int status;
-    public String message;
-    public Map<String, Object> user_data;
-    public BIDPoNData account_data;
-    public Map<String, Object> sessionInfo;
-    public Map<String, Object> userInfo;
-    
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
-    }
+	public String sessionId;
+	public String data;
+	public String appid;
+	public String ial;
+	public String publicKey;
+	public long createdTS;
+	public String createdDate;
+	public String eventData;
+	public int status;
+	public String message;
+	public Map<String, Object> user_data;
+	public Map<String, Object> account_data;
+	public Map<String, Object> sessionInfo;
+
+	@Override
+	public String toString() {
+		return new Gson().toJson(this);
+	}
 }

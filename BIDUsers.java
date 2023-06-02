@@ -9,7 +9,6 @@ package com.bidsdk;
 
 import com.bidsdk.model.BIDCommunityInfo;
 import com.bidsdk.model.BIDKeyPair;
-import com.bidsdk.model.BIDPoNData;
 import com.bidsdk.model.BIDSD;
 import com.bidsdk.model.BIDTenantInfo;
 import com.bidsdk.utils.WTM;
@@ -19,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BIDUsers {
-	public static BIDPoNData fetchUserByDID(BIDTenantInfo tenantInfo, String did, boolean fetchDevices) {
-		BIDPoNData ret = null;
+	public static Map<String, Object>  fetchUserByDID(BIDTenantInfo tenantInfo, String did, boolean fetchDevices) {
+		Map<String, Object>  ret = null;
 		try {
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
 			BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
@@ -29,7 +28,7 @@ public class BIDUsers {
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
-			Map<String, String> headers = WTM.defaultHeaders();
+			Map < String, String > headers = WTM.defaultHeaders();
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);
@@ -51,7 +50,7 @@ public class BIDUsers {
 			Map<String, String> map = new Gson().fromJson(responseStr, Map.class);
 
 			String dec_data = BIDECDSA.decrypt(map.get("data"), sharedKey);
-			ret = new Gson().fromJson(dec_data, BIDPoNData.class);
+			ret = new Gson().fromJson(dec_data, Map.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,7 +69,7 @@ public class BIDUsers {
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
-			Map<String, String> headers = WTM.defaultHeaders();
+			Map < String, String > headers = WTM.defaultHeaders();
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);

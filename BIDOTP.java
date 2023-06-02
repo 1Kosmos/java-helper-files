@@ -39,8 +39,6 @@ public class BIDOTP {
                 body.put("smsISDCode", isdCodeOrNull);
             }
 
-
-
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
             Map<String, String> headers = WTM.defaultHeaders();
@@ -89,7 +87,6 @@ public class BIDOTP {
             body.put("code", otpCode);
             body.put("tenantId", communityInfo.tenant.id);
             body.put("communityId", communityInfo.community.id);
-
 
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
