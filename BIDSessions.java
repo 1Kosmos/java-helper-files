@@ -14,6 +14,7 @@ import com.bidsdk.utils.ArrayHelper;
 import com.google.gson.Gson;
 import org.apache.http.HttpStatus;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,9 @@ public class BIDSessions {
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 			System.out.println("RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetched SD " + sd);
 			
+            InetAddress localHost = InetAddress.getLocalHost();
+            String ipAddress = localHost.getHostAddress();
+            
 			Map<String, Object> data = new HashMap<>();
 			data.put("tenant_dns", tenantInfo.dns);
 			data.put("tenant_tag", communityInfo.tenant.tenanttag);
@@ -127,6 +131,7 @@ public class BIDSessions {
 			data.put("event_id", UUID.randomUUID().toString());
 			data.put("event_ts", System.currentTimeMillis());
 			data.put("version", "v1");
+			data.put("server_ip", ipAddress);
 			data.put("session_id", sessionId);
 			
 			Map<String, Object> reason = new HashMap<>();
@@ -193,8 +198,7 @@ public class BIDSessions {
 			ret.status = statusCode;
 
 			if (ret.data != null) {
-				String clientSharedKey = BIDECDSA.createSharedKey("bFt8HNj8hnOaU+R2TL2WcMv9L6gJJxWjcini8RyymMI=",
-						ret.publicKey);
+				String clientSharedKey = BIDECDSA.createSharedKey(keySet.privateKey, ret.publicKey);
 				String dec_data = BIDECDSA.decrypt(ret.data, clientSharedKey);
 				ret.user_data = new Gson().fromJson(dec_data, Map.class);
 			}
@@ -204,10 +208,12 @@ public class BIDSessions {
 				ret.account_data = BIDUsers.fetchUserByDID(tenantInfo, (String) ret.user_data.get("did"), fetchDevices);
 			}
 
-			Map<String, Object> metadata = ret.sessionInfo != null
-					? (Map<String, Object>) ret.sessionInfo.get("metadata")
-					: null;
-			String purpose = (String) metadata.get("purpose");
+			Map<String, Object> metadata = null;
+			String purpose = null;
+			if(ret.sessionInfo != null) {
+				 metadata = (Map<String, Object>) ret.sessionInfo.get("metadata");
+				 purpose = (String) metadata.get("purpose");
+			}
 
 			System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Session purpose: " + purpose);
 			if (metadata != null && ((String) purpose).toLowerCase().equals("authentication")) {
