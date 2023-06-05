@@ -147,7 +147,7 @@ public class BIDSessions {
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);
-			headers.put("fetch_sessioninfo", Integer.toString(1));
+			headers.put("addsessioninfo", Integer.toString(1));
 			
 			Map<String, Object> sessionInfoResponse = WTM.execute("get", sd.sessions + "/session/" + sessionId,
 					headers, null, keepAlive);
