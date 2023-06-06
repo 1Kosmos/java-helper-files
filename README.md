@@ -82,14 +82,14 @@ BIDOtpVerifyResult result = BIDOTP.verifyOTP(tenantInfo, "<username>", "<otpcode
 ```
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
-BIDSession session = BIDSessions.createNewSession(tenantInfo, null, null);
+BIDSession session = BIDSessions.createNewSession(tenantInfo, null, null, metadataOrNull, journeyId);
 ```
 
 - Poll for UWL2.0 session response
 ```
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
-BIDSessionResponse response = BIDSessions.pollSession(tenantInfo, "<sessionId>", true, true);
+BIDSessionResponse response = BIDSessions.pollSession(tenantInfo, "<sessionId>", true, true, eventDataOrNull, requestId, journeyId);
 ```
 
 - FIDO2 Registration options

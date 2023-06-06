@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class WTM {
 
-	public static Map<String, Object> makeRequestId(UUID uuid) {
+	public static Map<String, Object> makeRequestId(String uuid) {
 		Map<String, Object> ret = new HashMap<>();
 		ret.put("ts", Instant.now().getEpochSecond());
 		ret.put("uuid", uuid != null ? uuid : UUID.randomUUID().toString());

@@ -69,7 +69,7 @@ public class BIDReports {
 			Map<String, String> headers = WTM.defaultHeaders();
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
 			headers.put("requestid",
-					BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId((UUID)requestId.get("uuid"))), sharedKey));
+					BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId((String)requestId.get("uuid"))), sharedKey));
 			headers.put("publickey", keySet.publicKey);
 
 			Boolean keepAlive = true;

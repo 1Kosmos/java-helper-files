@@ -52,18 +52,26 @@ public class BIDSessions {
 	}
 
 	public static BIDSession createNewSession(BIDTenantInfo tenantInfo, String authType, String scopes,
-			Map<String, Object> metadataOrNull) {
+			Map<String, Object> metadataOrNull, String journeyId) {
 		BIDSession ret = null;
 		try {
+			
+			if(journeyId == null) {
+				System.out.println("journeyId "+ journeyId + " | Create New Session UWL 2.0 | Creating new journeyId");
+				journeyId = UUID.randomUUID().toString();
+			}
+			
+			System.out.println("journeyId "+ journeyId + " | "+"Create New Session UWL 2.0 | tenant DNS " + tenantInfo.dns);
+		    
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
-			System.out.println("| Helper | Create New Session UWL 2.0 | Fetched community from adminconsole");
+			System.out.println("journeyId "+ journeyId + " | Helper | Create New Session UWL 2.0 | Fetched community from adminconsole");
 			BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
-			System.out.println("| Helper | Create New Session UWL 2.0 | Fetched SD " + sd);
+			System.out.println("journeyId "+ journeyId + " | Helper | Create New Session | Fetched SD | session URL " + sd.sessions);
 
 			String sessionsPublicKey = getPublicKey(sd.sessions);
-			System.out.println("| Helper | Create New Session UWL 2.0 | Fetched session public key " + sessionsPublicKey);
+			System.out.println("journeyId "+ journeyId + " | Helper | Create New Session | Fetched session public key " + sessionsPublicKey);
 
 			Map<String, Object> origin = new HashMap<>();
 			origin.put("tag", communityInfo.tenant.tenanttag);
@@ -72,6 +80,7 @@ public class BIDSessions {
 			origin.put("communityId", communityInfo.community.id);
 			origin.put("authPage", "blockid://authenticate");
 
+			System.out.println("journeyId "+ journeyId + " | "+"Create New Session UWL 2.0 | Preparing request params");
 			Map<String, Object> body = new HashMap<>();
 			body.put("origin", origin);
 			body.put("scopes", (scopes != null) ? scopes : "");
@@ -88,7 +97,7 @@ public class BIDSessions {
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);
 			
-			System.out.println("| Helper | Create New Session UWL 2.0 | Request body " + body);
+			System.out.println("journeyId "+ journeyId + " | Helper | Create New Session UWL 2.0 | Request body " + body);
 			
 			Boolean keepAlive = true;
 			Map<String, Object> response = WTM.execute("put", sd.sessions + "/session/new", headers,
@@ -97,27 +106,39 @@ public class BIDSessions {
 			String responseStr = (String) response.get("response");
 			int statusCode = (Integer) response.get("status");
 
-			System.out.println("| Helper | Create New Session UWL 2.0 | Response str and status: " + responseStr + " | status "+ statusCode );
+			System.out.println("journeyId "+ journeyId + " | Helper | Create New Session UWL 2.0 | Response str and status: " + responseStr + " | status "+ statusCode );
 			ret = new Gson().fromJson(responseStr, BIDSession.class);
 			ret.url = sd.sessions;
 			ret.status = statusCode;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("journeyId "+ journeyId + " | Helper | Create New Session UWL 2.0 | Return Response ");
 		return ret;
 	}
 
 	public static BIDSessionResponse pollSession(BIDTenantInfo tenantInfo, String sessionId, boolean fetchProfile,
-			boolean fetchDevices, Map<String, Object> eventDataOrNull, Map<String, Object> requestId) {
+			boolean fetchDevices, Map<String, Object> eventDataOrNull, Map<String, Object> requestId, String journeyId) {
 		BIDSessionResponse ret = null;
 		try {
-			System.out.println("RequestId " + requestId + " | " + sessionId +  " | Helper | Poll Session UWL 2.0 | Requested event data " + eventDataOrNull);
+			
+			if(journeyId == null) {
+				System.out.println("journeyId "+ journeyId + " | Create New Session UWL 2.0 | Creating new journeyId");
+				journeyId = UUID.randomUUID().toString();
+			}
+			
+			if(requestId == null) {
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId +  " | Create New Session UWL 2.0 | Creating new requestId");
+				requestId = WTM.makeRequestId();
+			}
+			
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId +  " | Helper | Poll Session UWL 2.0 | Requested event data " + eventDataOrNull);
 			BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
-			System.out.println("RequestId " + requestId + " | " + sessionId +  "| Helper | Poll Session UWL 2.0 | Fetched community from adminconsole");
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId +  "| Helper | Poll Session UWL 2.0 | Fetched community from adminconsole");
 			BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
-			System.out.println("RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetched SD " + sd);
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetched SD | Session URL: " + sd.sessions);
 			
             InetAddress localHost = InetAddress.getLocalHost();
             String ipAddress = localHost.getHostAddress();
@@ -133,6 +154,7 @@ public class BIDSessions {
 			data.put("version", "v1");
 			data.put("server_ip", ipAddress);
 			data.put("session_id", sessionId);
+			data.put("journey_id", journeyId);
 			
 			Map<String, Object> reason = new HashMap<>();
 			String eventName = "E_LOGIN_FAILED";
@@ -145,21 +167,22 @@ public class BIDSessions {
 
 			Map<String, String> headers = WTM.defaultHeaders();
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
-			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
+			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId((String) requestId.get("uuid"))), sharedKey));
 			headers.put("publickey", keySet.publicKey);
 			headers.put("addsessioninfo", Integer.toString(1));
 			
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetching session info ");
 			Map<String, Object> sessionInfoResponse = WTM.execute("get", sd.sessions + "/session/" + sessionId,
 					headers, null, keepAlive);
 
-			System.out.println("RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetching session response ");
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetching session response ");
 			Map<String, Object> response = WTM.execute("get", sd.sessions + "/session/" + sessionId + "/response",
 					headers, null, keepAlive);
 
 			String responseStr = (String) response.get("response");
 			int statusCode = (Integer) response.get("status");
 
-			System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Status: " +statusCode+ " Response str and status: " + responseStr);
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Status: " +statusCode+ " Response str and status: " + responseStr);
 			if (statusCode == HttpStatus.SC_NOT_FOUND) {
 				ret = new BIDSessionResponse();
 				ret.status = statusCode;
@@ -173,7 +196,7 @@ public class BIDSessions {
 				Map<String, Object> metadata = sessionInfoRes != null
 						? (Map<String, Object>) sessionInfoRes.get("metadata")
 						: null;
-				System.out.println("RequestId " + requestId + " | " + sessionId + "Status not 200 | sessionInfoRes " + sessionInfoRes);
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " Status not 200 | sessionInfoRes " + sessionInfoRes);
 				
 				if(metadata != null && ((String) metadata.get("purpose")).equals("authentication")) {
 					
@@ -185,7 +208,7 @@ public class BIDSessions {
 					reason.put("reason", responseStr);
 					data.put("login_state", "FAILED");
 					data.put("eventData", reason);
-					System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Logging fail event | reason: " + responseStr);
+					System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Logging fail event | reason: " + responseStr);
 					BIDReports.logEvent(tenantInfo, eventName, data, requestId);
 				}
 				ret = new BIDSessionResponse();
@@ -204,24 +227,25 @@ public class BIDSessions {
 			}
 
 			if (ret != null && ret.data != null && ret.user_data.containsKey("did") && fetchProfile) {
-				System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Fetch user by DID");
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Calling Fetch user by DID");
 				ret.account_data = BIDUsers.fetchUserByDID(tenantInfo, (String) ret.user_data.get("did"), fetchDevices);
 			}
 
 			Map<String, Object> metadata = null;
 			String purpose = null;
+
 			if(ret.sessionInfo != null) {
 				 metadata = (Map<String, Object>) ret.sessionInfo.get("metadata");
 				 purpose = (String) metadata.get("purpose");
 			}
 
-			System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Session purpose: " + purpose);
+			System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " | Helper | Poll Session UWL 2.0 | Session purpose: " + purpose);
 			if (metadata != null && ((String) purpose).toLowerCase().equals("authentication")) {
 
 				String did = (String) ret.user_data.get("did");
 
 				Map<String, Object> userData = (Map<String, Object>) ret.user_data.get("account");
-				System.out.println("RequestId " + requestId + " | Helper |  Poll Session UWL 2.0 | Prepare event data");
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | Helper |  Poll Session UWL 2.0 | Prepare event data");
 				Map<String, Object> account = new HashMap<>();
 				account.put("username", userData.get("username"));
 				account.put("uid", userData.get("uid"));
@@ -239,16 +263,18 @@ public class BIDSessions {
 					reason.put("reason", "PON data not found");
 					data.put("login_state", "FAILED");
 					data.put("eventData", reason);
+					System.out.println("journeyId "+ journeyId + " | Helper | Poll Session UWL 2.0 | Logging fail event | reason: " + new Gson().toJson(reason));
 					BIDReports.logEvent(tenantInfo, eventName, data, requestId);
 					return ret;
 				}
-				System.out.println("RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session | Fetching user account by did");
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Fetching user account by did");
 				Map<String, Object> userInfo = BIDUsers.fetchUserAccountsByDID(tenantInfo, did, true, true, account);
 				Map<String, Object> deviceData = (Map<String, Object>) userInfo.get("device");
 
 				List<Object> users = (List<Object>) userInfo.get("users");
 				
 				if (!users.isEmpty() && users.size() == 1) {
+					System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | one user account found ");
 					Map<String, Object> user = (Map<String, Object>) users.get(0);
 
 					String status = (String) user.get("status");
@@ -279,7 +305,7 @@ public class BIDSessions {
 				} else {
 					data.put("login_state", "FAILED");
 					reason.put("reason", (users.size() != 1) ? "Multiple Users found" : "User not Found");
-
+					System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + "| Helper | Poll Session UWL 2.0 | Logging fail event | reason: " + new Gson().toJson(reason));					
 				}
 
 				// Device Data
@@ -295,8 +321,7 @@ public class BIDSessions {
 					data.put("eventData", reason);
 				}
 
-				System.out.println("RequestId " + requestId + " | " + sessionId + " | Helper | Event Logging ");
-				// log event in reports service
+				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " | Helper | Event Logging ");
 				BIDReports.logEvent(tenantInfo, eventName, data, requestId);
 			}
 
