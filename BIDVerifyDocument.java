@@ -37,12 +37,15 @@ public class BIDVerifyDocument {
                 return ret;
             }
 
+            Boolean keepAlive = true;
+            
             //load from services
             Map < String, Object > response = WTM.execute(
                 "get",
                 url,
                 WTM.defaultHeaders(),
-                null
+                null,
+                keepAlive
             );
             String responseStr = (String) response.get("response");
 
@@ -91,10 +94,13 @@ public class BIDVerifyDocument {
             Map < String, Object > data = new HashMap < > ();
             data.put("data", enc_data);
 
+            Boolean keepAlive = true;
+
             Map < String, Object > response = WTM.execute("post",
                 sd.docuverify + "/verify",
                 headers,
-                new Gson().toJson(data)
+                new Gson().toJson(data),
+                keepAlive
             );
 
             String responseStr = (String) response.get("response");
@@ -146,10 +152,13 @@ public class BIDVerifyDocument {
             Map < String, Object > data = new HashMap < > ();
             data.put("data", enc_data);
 
+            Boolean keepAlive = true;
+            
             Map < String, Object > response = WTM.execute("post",
                 sd.docuverify + "/document_share_session/create",
                 headers,
-                new Gson().toJson(data));
+                new Gson().toJson(data),
+                keepAlive);
 
             String responseStr = (String) response.get("response");
 
@@ -186,10 +195,13 @@ public class BIDVerifyDocument {
             Map < String, Object > data = new HashMap < > ();
             data.put("data", enc_data);
 
+            Boolean keepAlive = true;
+
             Map < String, Object > response = WTM.execute("post",
                 sd.docuverify + "/document_share_session/result",
                 headers,
-                new Gson().toJson(data)
+                new Gson().toJson(data),
+                keepAlive
             );
 
             String responseStr = (String) response.get("response");

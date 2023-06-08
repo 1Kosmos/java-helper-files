@@ -52,10 +52,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/attestation/options",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -92,10 +95,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/attestation/result",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -128,10 +134,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/assertion/options",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -167,10 +176,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+      
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/assertion/result",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
