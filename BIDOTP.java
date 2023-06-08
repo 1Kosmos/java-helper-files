@@ -107,6 +107,7 @@ public class BIDOTP {
             int statusCode = (Integer) response.get("status");
 
             ret = new Gson().fromJson(responseStr, BIDOtpVerifyResult.class);
+
         }
         catch (Exception e) {
             e.printStackTrace();

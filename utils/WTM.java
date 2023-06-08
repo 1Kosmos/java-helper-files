@@ -77,9 +77,15 @@ public class WTM {
 				request = new HttpDelete(uri);
 			}
 
-			// add headers
-			request.setHeader("Content-Type", "application/json");
-			request.setHeader("charset", "utf-8");
+			if (keepAlive) {
+				request.setHeader("Connection", "keep-alive");
+			}
+
+            for (Map.Entry<String,String> entry : headers.entrySet()) {
+                request.setHeader(entry.getKey(), entry.getValue());
+            }
+            
+            //end - add headers
 
 			if (headers == null) {
 				headers = new HashMap<>();

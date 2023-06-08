@@ -40,9 +40,13 @@ public class BIDUsers {
 				url = url + "?devicelist=true";
 			}
 
-			Boolean keepAlive = false;
-
-			Map<String, Object> response = WTM.execute("get", url, headers, null, keepAlive);
+            Boolean keepAlive = false;
+            
+            Map<String, Object> response = WTM.execute("get",
+                    url,
+                    headers,
+                    null,
+                    keepAlive);
 
 			String responseStr = (String) response.get("response");
 			int statusCode = (Integer) response.get("status");
@@ -52,11 +56,12 @@ public class BIDUsers {
 			String dec_data = BIDECDSA.decrypt(map.get("data"), sharedKey);
 			ret = new Gson().fromJson(dec_data, Map.class);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
 
 	public static Map<String, Object> fetchUserAccountsByDID(BIDTenantInfo tenantInfo, String did, boolean fetchDevices,
 			boolean fetchUsers, Map<String, Object> account) {
@@ -69,7 +74,7 @@ public class BIDUsers {
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
-			Map < String, String > headers = WTM.defaultHeaders();
+			Map<String, String> headers = WTM.defaultHeaders();
 			headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);

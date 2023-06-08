@@ -69,7 +69,6 @@ public class BIDAccessCodes {
             data.put("data", enc_data);
 
             Boolean keepAlive = false;
-            
             Map < String, Object > response = WTM.execute("put",
                 sd.adminconsole + "/api/r2/acr/community/" + communityInfo.community.name + "/code",
                 headers,
