@@ -39,6 +39,16 @@ public class WTM {
 
     }
 
+	public static Map<String, Object> makeRequestId(String uuid) {
+		Map<String, Object> ret = new HashMap<>();
+		ret.put("ts", Instant.now().getEpochSecond());
+		ret.put("uuid", uuid != null ? uuid : UUID.randomUUID().toString());
+		ret.put("appid", "java-helper");
+
+		return ret;
+
+	}
+
     public static Map<String, String> defaultHeaders() {
         return new HashMap<String, String>(){{
             put("Content-Type", "application/json");
@@ -78,6 +88,10 @@ public class WTM {
             if (headers == null) {
                 headers = new HashMap<>();
             }
+
+			if (keepAlive) {
+				request.setHeader("Connection", "keep-alive");
+			}
 
             for (Map.Entry<String,String> entry : headers.entrySet()) {
                 request.setHeader(entry.getKey(), entry.getValue());
