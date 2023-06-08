@@ -39,8 +39,9 @@ public class BIDVerifiableCredential {
 				return ret;
 			}
 
+			Boolean keepAlive = true;
 			// load from services
-			Map<String, Object> response = WTM.execute("get", url, WTM.defaultHeaders(), null);
+			Map<String, Object> response = WTM.execute("get", url, WTM.defaultHeaders(), null, keepAlive);
 			String responseStr = (String) response.get("response");
 
 			int statusCode = (Integer) response.get("status");
@@ -82,11 +83,13 @@ public class BIDVerifiableCredential {
 			body.put("publicKey", userPublickey);
 			body.put("userURN", userUrn);
 
+			Boolean keepAlive = true;
+			
 			Map<String, Object> response = WTM
 					.execute(
 							"post", sd.vcs + "/tenant/" + communityInfo.tenant.id + "/community/"
 									+ communityInfo.community.id + "/vc/from/document/" + type,
-							headers, new Gson().toJson(body));
+							headers, new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -126,11 +129,13 @@ public class BIDVerifiableCredential {
 			body.put("userURN", userUrn);
 			body.put("issuer", issuer);
 
+			Boolean keepAlive = true;
+
 			Map<String, Object> response = WTM
 					.execute(
 							"post", sd.vcs + "/tenant/" + communityInfo.tenant.id + "/community/"
 									+ communityInfo.community.id + "/vc/from/payload/" + type,
-							headers, new Gson().toJson(body));
+							headers, new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -164,8 +169,10 @@ public class BIDVerifiableCredential {
 			Map<String, Object> body = new HashMap<>();
 			body.put("vc", vc);
 
+			Boolean keepAlive = true;
+			
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
-					+ "/community/" + communityInfo.community.id + "/vc/verify", headers, new Gson().toJson(body));
+					+ "/community/" + communityInfo.community.id + "/vc/verify", headers, new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -204,8 +211,10 @@ public class BIDVerifiableCredential {
 				body.put("createShareUrl", createShareUrl);				
 			}
 
+			Boolean keepAlive = true;
+
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
-					+ "/community/" + communityInfo.community.id + "/vp/create", headers, new Gson().toJson(body));
+					+ "/community/" + communityInfo.community.id + "/vp/create", headers, new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -239,8 +248,10 @@ public class BIDVerifiableCredential {
 			Map<String, Object> body = new HashMap<>();
 			body.put("vp", vp);
 
+			Boolean keepAlive = true;
+			
 			Map<String, Object> response = WTM.execute("post", sd.vcs + "/tenant/" + communityInfo.tenant.id
-					+ "/community/" + communityInfo.community.id + "/vp/verify", headers, new Gson().toJson(body));
+					+ "/community/" + communityInfo.community.id + "/vp/verify", headers, new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -271,8 +282,10 @@ public class BIDVerifiableCredential {
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
 			headers.put("publickey", keySet.publicKey);
 
+			Boolean keepAlive = true;
+
 			Map<String, Object> response = WTM.execute("get", sd.vcs + "/tenant/" + communityInfo.tenant.id
-					+ "/community/" + communityInfo.community.id + "/vc/" + vcId + "/status", headers, null);
+					+ "/community/" + communityInfo.community.id + "/vc/" + vcId + "/status", headers, null, keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -299,7 +312,9 @@ public class BIDVerifiableCredential {
 			headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(requestID), sharedKey));
 			headers.put("publickey", keySet.publicKey);
 
-			Map<String, Object> response = WTM.execute("get", downloadUri, headers, null);
+			Boolean keepAlive = true;
+
+			Map<String, Object> response = WTM.execute("get", downloadUri, headers, null, keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
@@ -343,9 +358,11 @@ public class BIDVerifiableCredential {
 			String tenantId = ((Map<String, String>) firstVC.get("issuer")).get("tenantId");
 			String communityId = ((Map<String, String>) firstVC.get("issuer")).get("communityId");
 
+			Boolean keepAlive = true;
+			
 			Map<String, Object> response = WTM.execute("post",
 					serviceUrl + "/tenant/" + tenantId + "/community/" + communityId + "/vp/verify", headers,
-					new Gson().toJson(body));
+					new Gson().toJson(body), keepAlive);
 
 			int statusCode = (Integer) response.get("status");
 			String responseStr = (String) response.get("response");
