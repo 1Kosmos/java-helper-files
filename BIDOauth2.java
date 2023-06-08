@@ -8,11 +8,8 @@
 package com.bidsdk;
 
 import com.bidsdk.model.*;
-import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
-import com.kenai.jffi.Closure.Buffer;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

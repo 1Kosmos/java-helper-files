@@ -75,7 +75,11 @@ public class BIDECDSA {
         try {
             WalletFile walletFile = org.web3j.crypto.Wallet.createLight("", keyPair);
             ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-            String jsonStr = objectMapper.writeValueAsString(walletFile);
+            try {
+				String jsonStr = objectMapper.writeValueAsString(walletFile);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
             byte[] publicKeyByte = null;
             if (publicKeyInt.toByteArray().length > 64) {
                 publicKeyByte = Arrays.copyOfRange(publicKeyInt.toByteArray(), 1, publicKeyInt.toByteArray().length);
@@ -90,7 +94,7 @@ public class BIDECDSA {
             ret.publicKey = encoder.encodeToString(publicKeyByte);
 // don't need mnemonic and did at this time mnemonic, walletFile.getAddress());
 
-        } catch (CipherException | JsonProcessingException e) {
+        } catch (CipherException e) {
             e.printStackTrace();
         }
         return ret;

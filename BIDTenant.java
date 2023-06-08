@@ -150,8 +150,12 @@ public class BIDTenant {
   }
 
   public BIDKeyPair getKeySet() {
+    try{
     if (this.keySet == null) {
       this.keySet = BIDECDSA.generateKeyPair();
+    }
+     } catch (Exception e) {
+      e.printStackTrace();
     }
     return keySet;
   }
