@@ -70,11 +70,14 @@ public class BIDTenant {
 
       String url = "https://" + tenantInfo.dns + "/api/r1/system/community_info/fetch";
 
+      Boolean keepAlive = false;
+      
       Map<String, Object> response = WTM.execute(
         "post",
         url,
         WTM.defaultHeaders(),
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -115,12 +118,15 @@ public class BIDTenant {
         sd = new Gson().fromJson(cache_str, BIDSD.class);
         return sd;
       }
+      
+      Boolean keepAlive = true;
 
       Map<String, Object> response = WTM.execute(
         "get",
         sdUrl,
         WTM.defaultHeaders(),
-        null
+        null,
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");

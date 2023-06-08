@@ -42,10 +42,13 @@ public class BIDMessaging {
             body.put("smsISDCode", smsISDCode);
             body.put("smsTemplateB64", smsTemplateB64);
 
+            Boolean keepAlive = false;
+            
             Map < String, Object > response = WTM.execute("post",
                 sd.adminconsole + "/api/r2/messaging/schedule",
                 headers,
-                new Gson().toJson(body)
+                new Gson().toJson(body),
+                keepAlive
             );
 
             String responseStr = (String) response.get("response");

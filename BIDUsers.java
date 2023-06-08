@@ -40,7 +40,13 @@ public class BIDUsers {
                 url = url + "?devicelist=true";
             }
 
-			Boolean keepAlive = false;
+            Boolean keepAlive = false;
+            
+            Map<String, Object> response = WTM.execute("get",
+                    url,
+                    headers,
+                    null,
+                    keepAlive);
 
 			Map<String, Object> response = WTM.execute("get", url, headers, null, keepAlive);
 
