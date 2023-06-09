@@ -10,7 +10,6 @@ package com.bidsdk;
 import com.bidsdk.model.BIDAttestationOptionsResponse;
 import com.bidsdk.model.BIDAttestationOptionsValue;
 import com.bidsdk.model.BIDAttestationResultData;
-import com.bidsdk.model.BIDAttestationResultResponseValue;
 import com.bidsdk.model.BIDAttestationResultValue;
 import com.bidsdk.model.BIDCommunityInfo;
 import com.bidsdk.model.BIDKeyPair;
@@ -20,7 +19,6 @@ import com.bidsdk.model.BIDAssertionOptionValue;
 import com.bidsdk.model.BIDAssertionOptionResponse;
 import com.bidsdk.model.BIDAssertionResultValue;
 import com.bidsdk.model.BIDAssertionResultResponse;
-import com.bidsdk.utils.InMemCache;
 import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
 import java.util.HashMap;
@@ -52,10 +50,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/attestation/options",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -92,10 +93,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/attestation/result",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -128,10 +132,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/assertion/options",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");
@@ -167,10 +174,13 @@ public class BIDWebAuthn {
       body.put("communityId", communityInfo.community.id);
       body.put("tenantId", communityInfo.tenant.id);
 
+      Boolean keepAlive = true;
+      
       Map<String, Object> response = WTM.execute("post",
         sd.webauthn + "/u1/assertion/result",
         headers,
-        new Gson().toJson(body)
+        new Gson().toJson(body),
+        keepAlive
       );
 
       String responseStr = (String) response.get("response");

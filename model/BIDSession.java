@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 public class BIDSession {
     public String sessionId;
+    public int status;
     public String url;
     
     @Override

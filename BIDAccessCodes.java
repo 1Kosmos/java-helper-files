@@ -68,10 +68,12 @@ public class BIDAccessCodes {
             Map<String, Object> data = new HashMap<>();
             data.put("data", enc_data);
 
+            Boolean keepAlive = false;
             Map < String, Object > response = WTM.execute("put",
                 sd.adminconsole + "/api/r2/acr/community/" + communityInfo.community.name + "/code",
                 headers,
-                new Gson().toJson(data)
+                new Gson().toJson(data),
+                keepAlive
             );
             
             int statusCode = (Integer) response.get("status");
@@ -106,10 +108,13 @@ public class BIDAccessCodes {
             headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
             headers.put("publickey", keySet.publicKey);
 
+            Boolean keepAlive = false;
+            
             Map < String, Object > response = WTM.execute("get",
                 sd.adminconsole + "/api/r1/acr/community/" + communityInfo.community.name + "/" + code,
                 headers,
-                null
+                null,
+                keepAlive
             );
 
             int statusCode = (Integer) response.get("status");
@@ -163,10 +168,13 @@ public class BIDAccessCodes {
 
             String body = new String("{}");
 
+            Boolean keepAlive = false;
+            
             Map < String, Object > response = WTM.execute("post",
                 sd.adminconsole + "/api/r1/acr/community/" + communityInfo.community.name + "/" + code + "/redeem",
                 headers,
-                body
+                body,
+                keepAlive
             );
 
             int statusCode = (Integer) response.get("status");

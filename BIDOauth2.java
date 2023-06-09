@@ -8,11 +8,8 @@
 package com.bidsdk;
 
 import com.bidsdk.model.*;
-import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
-import com.kenai.jffi.Closure.Buffer;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -65,6 +62,7 @@ public class BIDOauth2 {
 			request.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.setHeader("charset", "utf-8");
 			request.setHeader("Accept", "application/json");
+			request.setHeader("Connection", "keep-alive");
 
 			List<NameValuePair> body = new ArrayList<NameValuePair>();
 			body.add(new BasicNameValuePair("client_id", clientId));
@@ -141,6 +139,7 @@ public class BIDOauth2 {
 			request.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.setHeader("charset", "utf-8");
 			request.setHeader("Authorization", "Basic " + authEncoded);
+			request.setHeader("Connection", "keep-alive");
 
 			List<NameValuePair> body = new ArrayList<NameValuePair>();
 			body.add(new BasicNameValuePair("grant_type", grantType));
