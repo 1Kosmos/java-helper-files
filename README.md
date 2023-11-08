@@ -86,6 +86,13 @@ BIDSession session = BIDSessions.createNewSession(tenantInfo, null, null, metada
 ```
 
 - Poll for UWL2.0 session response
+  - (new) supports additional set of k/v pairs as metadata to be passed into the session. This can be used to transmit supplemental information like
+    - purpose of the uwl session (eg: `authentication`, `hotel-checkin`)
+    - ip of the requesting web page
+    - dns of the requesting web page etc.
+  Depending on the implementation of the authenticator app, a user can be presented this additional info.
+  - If pon does not exist, ponUsers is empty, or ponUsers does not contain a mobile user, the method will return isValid false.
+  - When a user provides purpose, the function will return a sessionInfo property containing session data.
 ```
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
 
