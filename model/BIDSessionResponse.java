@@ -25,6 +25,7 @@ public class BIDSessionResponse {
 	public Map<String, Object> user_data;
 	public Map<String, Object> account_data;
 	public Map<String, Object> sessionInfo;
+	public boolean isValid = false;
 
 	@Override
 	public String toString() {

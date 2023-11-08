@@ -84,7 +84,7 @@ public class BIDTenant {
       int statusCode = (Integer) response.get("status");
 
       if (statusCode == HttpStatus.SC_OK) {
-        InMemCache.getInstance().set(cache_key, responseStr);
+        InMemCache.getInstance().set(cache_key, responseStr, 24*60*60*1000);
         communityInfo = new Gson().fromJson(responseStr, BIDCommunityInfo.class);
       } else {
         throw new Exception("Unable to load communityInfo code" + statusCode + " with message: " + responseStr);
@@ -134,7 +134,7 @@ public class BIDTenant {
 
       if (statusCode == HttpStatus.SC_OK) {
         sd = new Gson().fromJson(responseStr, BIDSD.class);
-        InMemCache.getInstance().set(cache_key, responseStr);
+        InMemCache.getInstance().set(cache_key, responseStr, 60*60*1000);
       } else {
         throw new Exception(
           "Unable to load sd code" +

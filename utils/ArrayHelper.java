@@ -11,4 +11,13 @@ public class ArrayHelper {
         }
         return false;
     }
+    
+    public static boolean containStringEqualsIgonreCase(List<String> array, String target) {
+        for (String element : array) {
+            if (element.equalsIgnoreCase(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
