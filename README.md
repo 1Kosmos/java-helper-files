@@ -91,7 +91,7 @@ BIDSession session = BIDSessions.createNewSession(tenantInfo, null, null, metada
 ```
 
 - Poll for UWL2.0 session response
-  - If pon does not exist, ponUsers is empty, or ponUsers does not contain a mobile user, the method will return isValid false.
+  - If pon does not exist, ponUsers is empty, or ponUsers does not contain a mobile user, the method will return `isValid: false` with other data .
   - When a user provides purpose, the function will return a sessionInfo property containing session data.
 ```
 BIDTenantInfo tenantInfo = new BIDTenantInfo("<dns>", "<communityName>", "<license>");
