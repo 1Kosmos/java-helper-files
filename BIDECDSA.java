@@ -7,10 +7,22 @@
  */
 package com.bidsdk;
 
-import com.bidsdk.model.BIDKeyPair;
-import com.bidsdk.utils.EncryptDecryptLogic;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPoint;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.ECPublicKeySpec;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+
+import javax.crypto.KeyAgreement;
+
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -20,24 +32,14 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyAgreement;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.ECPublicKeySpec;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import com.bidsdk.model.BIDKeyPair;
+import com.bidsdk.utils.EncryptDecryptLogic;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class BIDECDSA {
@@ -94,7 +96,7 @@ public class BIDECDSA {
             ret.publicKey = encoder.encodeToString(publicKeyByte);
 // don't need mnemonic and did at this time mnemonic, walletFile.getAddress());
 
-        } catch (CipherException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ret;
