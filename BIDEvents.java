@@ -20,7 +20,7 @@ import com.bidsdk.utils.InMemCache;
 import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
 
-public class BIDReports {
+public class BIDEvents {
 
 	private static final int NUM_THREADS = 3;
 	private static final ExecutorService asyncExecutor = Executors.newFixedThreadPool(NUM_THREADS);
@@ -72,9 +72,9 @@ public class BIDReports {
 				String licenseKey = tenantInfo.licenseKey;
 				BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-				String reportPublicKey = getPublicKey(sd.reports);
+				String eventsPublicKey = getPublicKey(sd.events);
 
-				String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, reportPublicKey);
+				String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, eventsPublicKey);
 
 				Map<String, String> headers = WTM.defaultHeaders();
 				headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
@@ -89,7 +89,7 @@ public class BIDReports {
 				body.put("data", enc_data);
 
 				Map<String, Object> response = WTM.execute(
-						"put", sd.reports + "/tenant/" + communityInfo.tenant.id + "/community/"
+						"put", sd.events + "/tenant/" + communityInfo.tenant.id + "/community/"
 								+ communityInfo.community.id + "/event/" + eventName,
 						headers, new Gson().toJson(body), keepAlive);
 
@@ -102,7 +102,7 @@ public class BIDReports {
 						+ " | community " + communityInfo.community.id + " | event " + eventName);
 
 			} catch (Exception e) {
-				System.out.println("RequestId ::" + requestId + " | BIDReports | Exception occurred while checking session. Message is:" + e.getMessage());
+				System.out.println("RequestId ::" + requestId + " | BIDEvents | Exception occurred while checking session. Message is:" + e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -120,7 +120,7 @@ public class BIDReports {
 			String licenseKey = tenantInfo.licenseKey;
 			BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
 
-			String reportPublicKey = getPublicKey(sd.reports);
+			String reportPublicKey = getPublicKey(sd.events);
 
 			String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, reportPublicKey);
 
@@ -136,7 +136,7 @@ public class BIDReports {
 			body.put("data", enc_data);
 
 			Map<String, Object> response = WTM.execute(
-					"put", sd.reports + "/tenant/" + communityInfo.tenant.id + "/community/"
+					"put", sd.events + "/tenant/" + communityInfo.tenant.id + "/community/"
 							+ communityInfo.community.id + "/event/" + eventName,
 					headers, new Gson().toJson(body), keepAlive);
 
@@ -149,7 +149,7 @@ public class BIDReports {
 							+ communityInfo.tenant.id + " | community " + communityInfo.community.id + " | event " + eventName);
 
 		} catch (Exception e) {
-			System.out.println("RequestId ::" + requestId + " | BIDReports | Exception occurred while checking session. Message is:" + e.getMessage());
+			System.out.println("RequestId ::" + requestId + " | BIDEvents | Exception occurred while checking session. Message is:" + e.getMessage());
 			e.printStackTrace();
 		}
 

@@ -229,8 +229,6 @@ public class BIDSessions {
 				data.put("server_ip", ipAddress);
 				data.put("session_id", sessionId);
 				data.put("journey_id", journeyId);
-
-				//TODO: add mobile authenticator DID & publicKey 
 				
 				String did = (String) ret.user_data.get("did");
 
@@ -272,7 +270,7 @@ public class BIDSessions {
 
 				System.out.println("journeyId "+ journeyId + " | RequestId " + requestId + " | " + sessionId + " |completed Event Logging  | " + eventName + "Payload || "+new Gson().toJson(data));
 				
-				BIDReports.logEventAsync(tenantInfo, eventName, data, requestId);
+				BIDEvents.logEventAsync(tenantInfo, eventName, data, requestId);
 			}
 
 		} catch (Exception e) {
