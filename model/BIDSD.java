@@ -19,7 +19,7 @@ public class BIDSD {
     public String authn;
     public String authz;
     public String acr;
-    public String reports
+    public String reports;
     public String events;
     public String webauthn;
     public String docuverify;
