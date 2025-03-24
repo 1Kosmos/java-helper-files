@@ -8,100 +8,42 @@
 package com.bidsdk;
 
 import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.ECPublicKeySpec;
+import java.security.*;
+import java.security.spec.*;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
-
-import javax.crypto.KeyAgreement;
-
-import org.bitcoinj.crypto.ChildNumber;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
-import org.bitcoinj.wallet.DeterministicSeed;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.WalletFile;
-import org.web3j.protocol.ObjectMapperFactory;
+import javax.crypto.KeyAgreement;
+
 
 import com.bidsdk.model.BIDKeyPair;
 import com.bidsdk.utils.EncryptDecryptLogic;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class BIDECDSA {
 
-    private static final String mDefaultDerivativePath = "m/44'/60'/0'/0/0";//default derivative path for ethereum wallet
-    public static BIDKeyPair generateKeyPair() {
-        DeterministicSeed deterministicSeed = new DeterministicSeed(new SecureRandom(), 128, "");
-        String[] pathArray = mDefaultDerivativePath.split("/");
-
-        byte[] seedBytes = deterministicSeed.getSeedBytes();
-        List<String> mnemonic = deterministicSeed.getMnemonicCode();
-
-        if (seedBytes == null)
-            return null;
-
-        DeterministicKey deterministicKey = HDKeyDerivation.createMasterPrivateKey(seedBytes);
-
-        for (int i = 1; i < pathArray.length; i++) {
-            ChildNumber childNumber;
-            if (pathArray[i].endsWith("'")) {
-                int number = Integer.parseInt(pathArray[i].substring(0, pathArray[i].length() - 1));
-                childNumber = new ChildNumber(number, true);
-            } else {
-                int number = Integer.parseInt(pathArray[i]);
-                childNumber = new ChildNumber(number, false);
-            }
-            deterministicKey = HDKeyDerivation.deriveChildKey(deterministicKey, childNumber);
-        }
-
-        ECKeyPair keyPair = ECKeyPair.create(deterministicKey.getPrivKeyBytes());
-        BigInteger privateKeyInt = keyPair.getPrivateKey();
-        BigInteger publicKeyInt = keyPair.getPublicKey();
-
-        BIDKeyPair ret = null;
-        try {
-            WalletFile walletFile = org.web3j.crypto.Wallet.createLight("", keyPair);
-            ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-            try {
-				String jsonStr = objectMapper.writeValueAsString(walletFile);
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-            byte[] publicKeyByte = null;
-            if (publicKeyInt.toByteArray().length > 64) {
-                publicKeyByte = Arrays.copyOfRange(publicKeyInt.toByteArray(), 1, publicKeyInt.toByteArray().length);
-            } else {
-                publicKeyByte = publicKeyInt.toByteArray();
-            }
-
-            Base64.Encoder encoder = Base64.getEncoder();
-
-            ret = new BIDKeyPair();
-            ret.privateKey = encoder.encodeToString(privateKeyInt.toByteArray());
-            ret.publicKey = encoder.encodeToString(publicKeyByte);
-// don't need mnemonic and did at this time mnemonic, walletFile.getAddress());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret;
+    public static BIDKeyPair generateKeyPair() throws Exception {
+        BIDKeyPair keyPairs = new BIDKeyPair();
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDH", "BC");
+        ECGenParameterSpec ecGenParameterSpec = new ECGenParameterSpec("secp256k1");
+        keyPairGenerator.initialize(ecGenParameterSpec, new SecureRandom());
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        BCECPrivateKey privateKey = (BCECPrivateKey) keyPair.getPrivate();
+        BigInteger privateKeyValue = privateKey.getD();
+        BCECPublicKey publicKeyBC = (BCECPublicKey) keyPair.getPublic();
+        byte[] rawPubKeyBytes = publicKeyBC.getQ().getEncoded(false);
+        byte[] pubKeyBytes = Arrays.copyOfRange(rawPubKeyBytes, 1, rawPubKeyBytes.length);
+        keyPairs.privateKey = Base64.getEncoder().encodeToString(privateKeyValue.toByteArray());
+        keyPairs.publicKey = Base64.getEncoder().encodeToString(pubKeyBytes);
+        String sharedKey = createSharedKey(keyPairs.privateKey, keyPairs.publicKey);
+        return keyPairs;
     }
-
     public static String encrypt(String value, String key) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         EncryptDecryptLogic encryptDecryptLogic = new EncryptDecryptLogic();
@@ -162,8 +104,5 @@ public class BIDECDSA {
         }
         return new String(hexChars);
     }
-
-
-
 
 }
