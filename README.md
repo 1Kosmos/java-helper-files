@@ -14,8 +14,9 @@ ext {
 
 dependencies {
 
-	implementation group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.15.10'
-	implementation "org.web3j:core:$web3jVersion"
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.63'
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.63'
+    implementation group: 'org.bouncycastle', name: 'bcprov-ext-jdk15on', version: '1.63'
 
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.3.1'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
@@ -29,17 +30,26 @@ dependencies {
 <dependencies>
 	other dependency....
 
-	<dependency>
-		<groupId>org.bitcoinj</groupId>
-		<artifactId>bitcoinj-core</artifactId>
-		<version>0.15.10</version>
-	</dependency>
-	<!-- https://mvnrepository.com/artifact/org.web3j/core -->
-	<dependency>
-		<groupId>org.web3j</groupId>
-		<artifactId>core</artifactId>
-		<version>4.5.4</version>
-	</dependency>
+    <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>1.63</version>
+    </dependency>
+    <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk15on</artifactId>
+        <version>1.63</version>
+    </dependency>
+    <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-ext-jdk15on</artifactId>
+        <version>1.63</version>
+    </dependency>
+    <dependency>
+        <groupId>org.bitcoinj</groupId>
+        <artifactId>bitcoinj-core</artifactId>
+        <version>0.15.10</version>
+    </dependency>
 	<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
 	<dependency>
 		<groupId>com.squareup.okhttp3</groupId>
