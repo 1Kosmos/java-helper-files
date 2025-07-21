@@ -89,7 +89,8 @@ public class BIDOTP {
         return ret;
     }
 
-    public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode) {
+    
+    public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode, String[] serviceNames) {
         BIDOtpVerifyResult ret = null;
         try {
             BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -103,6 +104,11 @@ public class BIDOTP {
             body.put("tenantId", communityInfo.tenant.id);
             body.put("communityId", communityInfo.community.id);
 
+            // Add serviceNames to the body if not null
+            if (serviceNames != null && serviceNames.length > 0) {
+                body.put("serviceNames", serviceNames);
+            }
+
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
             Map<String, String> headers = WTM.defaultHeaders();
@@ -111,7 +117,7 @@ public class BIDOTP {
             headers.put("publickey", keySet.publicKey);
 
             Boolean keepAlive = false;
-            
+
             Map<String, Object> response = WTM.execute("post",
                     sd.adminconsole + "/api/r2/otp/verify",
                     headers,
@@ -123,13 +129,11 @@ public class BIDOTP {
 
             ret = new Gson().fromJson(responseStr, BIDOtpVerifyResult.class);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return ret;
-
     }
     
     public static Boolean validateOTP(String otp, String seed, Integer timeSkew) throws Exception {
