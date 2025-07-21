@@ -89,8 +89,7 @@ public class BIDOTP {
         return ret;
     }
 
-    
-// Original method (unchanged for backward compatibility)
+    // Original method (unchanged for backward compatibility)
 public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode) {
     return verifyOTP(tenantInfo, userId, otpCode, null); // Delegate to the new method
 }
@@ -140,53 +139,7 @@ public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String user
     }
 
     return ret;
-}
-    public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode, String[] serviceNames) {
-        BIDOtpVerifyResult ret = null;
-        try {
-            BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
-            BIDKeyPair keySet = BIDTenant.getInstance().getKeySet();
-            String licenseKey = tenantInfo.licenseKey;
-            BIDSD sd = BIDTenant.getInstance().getSD(tenantInfo);
-
-            Map<String, Object> body = new HashMap<>();
-            body.put("userId", userId);
-            body.put("code", otpCode);
-            body.put("tenantId", communityInfo.tenant.id);
-            body.put("communityId", communityInfo.community.id);
-
-            // Add serviceNames to the body if not null
-            if (serviceNames != null && serviceNames.length > 0) {
-                body.put("serviceNames", serviceNames);
-            }
-
-            String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
-
-            Map<String, String> headers = WTM.defaultHeaders();
-            headers.put("licensekey", BIDECDSA.encrypt(licenseKey, sharedKey));
-            headers.put("requestid", BIDECDSA.encrypt(new Gson().toJson(WTM.makeRequestId()), sharedKey));
-            headers.put("publickey", keySet.publicKey);
-
-            Boolean keepAlive = false;
-
-            Map<String, Object> response = WTM.execute("post",
-                    sd.adminconsole + "/api/r2/otp/verify",
-                    headers,
-                    new Gson().toJson(body),
-                    keepAlive);
-
-            String responseStr = (String) response.get("response");
-            int statusCode = (Integer) response.get("status");
-
-            ret = new Gson().fromJson(responseStr, BIDOtpVerifyResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ret;
-    }
-    
+}    
     public static Boolean validateOTP(String otp, String seed, Integer timeSkew) throws Exception {
         
     	long currentInterval = getCurrentInterval();
