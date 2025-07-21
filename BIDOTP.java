@@ -25,12 +25,12 @@ import com.bidsdk.utils.WTM;
 import com.google.gson.Gson;
 
 public class BIDOTP {
-	
-	private static final int INTERVAL = 30;
+    
+    private static final int INTERVAL = 30;
     private static final int PASS_CODE_LENGTH = 6;
     private static final String CRYPTO = "HmacSHA1";
     private static final long ttl = 30 * 60 * 1000;
-	
+    
     public static BIDOtpResponse requestOTP(BIDTenantInfo tenantInfo, String userId, String emailOrNull, String phoneOrNull, String isdCodeOrNull) {
         BIDOtpResponse ret = null;
         try {
@@ -89,7 +89,13 @@ public class BIDOTP {
         return ret;
     }
 
+    // Original method (unchanged for backward compatibility)
     public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode) {
+        return verifyOTP(tenantInfo, userId, otpCode, null); // Delegate to the new method
+    }
+
+    // New overloaded method with the additional parameter
+    public static BIDOtpVerifyResult verifyOTP(BIDTenantInfo tenantInfo, String userId, String otpCode, String[] serviceNames) {
         BIDOtpVerifyResult ret = null;
         try {
             BIDCommunityInfo communityInfo = BIDTenant.getInstance().getCommunityInfo(tenantInfo);
@@ -103,6 +109,11 @@ public class BIDOTP {
             body.put("tenantId", communityInfo.tenant.id);
             body.put("communityId", communityInfo.community.id);
 
+            // Add serviceNames to the body if not null
+            if (serviceNames != null && serviceNames.length > 0) {
+                body.put("serviceNames", serviceNames);
+            }
+
             String sharedKey = BIDECDSA.createSharedKey(keySet.privateKey, communityInfo.community.publicKey);
 
             Map<String, String> headers = WTM.defaultHeaders();
@@ -111,7 +122,7 @@ public class BIDOTP {
             headers.put("publickey", keySet.publicKey);
 
             Boolean keepAlive = false;
-            
+
             Map<String, Object> response = WTM.execute("post",
                     sd.adminconsole + "/api/r2/otp/verify",
                     headers,
@@ -123,43 +134,40 @@ public class BIDOTP {
 
             ret = new Gson().fromJson(responseStr, BIDOtpVerifyResult.class);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return ret;
-
     }
-    
     public static Boolean validateOTP(String otp, String seed, Integer timeSkew) throws Exception {
         
-    	long currentInterval = getCurrentInterval();
+        long currentInterval = getCurrentInterval();
         Boolean matched = false;
         
         do {
-        	String skewedHash = generateOTPWithSkew(seed, currentInterval);
-        	currentInterval -= 1;
-        	timeSkew 		-= 30;
+            String skewedHash = generateOTPWithSkew(seed, currentInterval);
+            currentInterval -= 1;
+            timeSkew 		-= 30;
 
 
-        	if (skewedHash.equalsIgnoreCase(otp)) {
-        		matched = true;
-        		break;
-        	}
+            if (skewedHash.equalsIgnoreCase(otp)) {
+                matched = true;
+                break;
+            }
         } while (timeSkew > 0);
 
         if (matched && isAlreadyUsed(otp, seed)) {
-        	matched = false;
+            matched = false;
         }
         return matched;
     }
     
     private static long getCurrentInterval() {
-		long currentTimeSeconds = System.currentTimeMillis() / 1000;
-		return currentTimeSeconds / INTERVAL;
-	}
-	
+        long currentTimeSeconds = System.currentTimeMillis() / 1000;
+        return currentTimeSeconds / INTERVAL;
+    }
+    
     private static String generateOTPWithSkew(String seed, long timeInSeconds) {
         Long totp = makeOTP(seed, timeInSeconds);
         int length = String.valueOf(totp).length();
@@ -190,13 +198,13 @@ public class BIDOTP {
     }
     
     private static boolean isAlreadyUsed(String otp, String seed) {
-    	String otpHash = UtilityClass.get_SHA_512(otp, seed);
-    	InMemCache cache = InMemCache.getInstance();
-    	if(!UtilityClass.isValidString(cache.get(otpHash))) {
-    		cache.set(otpHash, seed, ttl);
-    		return false;
-    	}
-    	return true;
+        String otpHash = UtilityClass.get_SHA_512(otp, seed);
+        InMemCache cache = InMemCache.getInstance();
+        if(!UtilityClass.isValidString(cache.get(otpHash))) {
+            cache.set(otpHash, seed, ttl);
+            return false;
+        }
+        return true;
     }
 
 }
